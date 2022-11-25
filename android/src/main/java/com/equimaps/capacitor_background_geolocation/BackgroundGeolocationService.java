@@ -1,5 +1,6 @@
 package com.equimaps.capacitor_background_geolocation;
 
+import android.location.LocationManager;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
