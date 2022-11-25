@@ -89,7 +89,7 @@ public class BackgroundGeolocationService extends Service {
             );
             LocationRequest locationRequest = new LocationRequest();
             locationRequest.setMaxWaitTime(timeout);
-            locationRequest.setInterval(enableHighAccuracy);
+            locationRequest.setInterval(maximumAge);
 	    if (enableHighAccuracy) {
             	locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 	    } else {
