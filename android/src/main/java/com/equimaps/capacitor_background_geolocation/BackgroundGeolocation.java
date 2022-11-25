@@ -141,7 +141,10 @@ public class BackgroundGeolocation extends Plugin {
         service.addWatcher(
                 call.getCallbackId(),
                 backgroundNotification,
-                call.getFloat("distanceFilter", 0f)
+                call.getFloat("distanceFilter", 0f),
+                call.getFloat("timeout", 1000),
+                call.getFloat("maximumAge", 1000),
+                call.getBool("enableHighAccuracy", true),
         );
     }
 

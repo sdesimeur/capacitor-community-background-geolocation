@@ -80,14 +80,27 @@ public class BackgroundGeolocationService extends Service {
                 final String id,
                 Notification backgroundNotification,
                 float distanceFilter
+		long timeout,
+		long maximumAge,
+		boolean enableHighAccuracy
         ) {
             FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(
                     BackgroundGeolocationService.this
             );
             LocationRequest locationRequest = new LocationRequest();
-            locationRequest.setMaxWaitTime(1000);
-            locationRequest.setInterval(1000);
-            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            locationRequest.setMaxWaitTime(timeout);
+            locationRequest.setInterval(enableHighAccuracy);
+	    if (enableHighAccuracy) {
+            	locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+	    } else {
+		LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		boolean networkEnable = false;
+		try {
+                    networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                } catch (Exception ex) {}
+
+            	locationRequest.setPriority(networkEnabled ? Priority.PRIORITY_BALANCED_POWER_ACCURACY : Priority.PRIORITY_LOW_POWER);
+	    }
             locationRequest.setSmallestDisplacement(distanceFilter);
 
             LocationCallback callback = new LocationCallback(){
