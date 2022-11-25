@@ -1,5 +1,6 @@
 package com.equimaps.capacitor_background_geolocation;
 
+import android.content.Context;
 import android.location.LocationManager;
 import android.app.Notification;
 import android.app.Service;
@@ -94,13 +95,13 @@ public class BackgroundGeolocationService extends Service {
 	    if (enableHighAccuracy) {
             	locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 	    } else {
-		LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		boolean networkEnable = false;
+		LocationManager lm = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
+		boolean networkEnabled = false;
 		try {
                     networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
                 } catch (Exception ex) {}
 
-            	locationRequest.setPriority(networkEnabled ? Priority.PRIORITY_BALANCED_POWER_ACCURACY : Priority.PRIORITY_LOW_POWER);
+            	locationRequest.setPriority(networkEnabled ? LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY : LocationRequest.PRIORITY_LOW_POWER);
 	    }
             locationRequest.setSmallestDisplacement(distanceFilter);
 
