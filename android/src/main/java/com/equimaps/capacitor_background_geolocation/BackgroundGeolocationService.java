@@ -79,7 +79,7 @@ public class BackgroundGeolocationService extends Service {
         void addWatcher(
                 final String id,
                 Notification backgroundNotification,
-                float distanceFilter
+                float distanceFilter,
 		long timeout,
 		long maximumAge,
 		boolean enableHighAccuracy
