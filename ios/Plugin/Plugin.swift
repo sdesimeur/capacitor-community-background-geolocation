@@ -90,9 +90,11 @@ public class BackgroundGeolocation : CAPPlugin, CLLocationManagerDelegate {
                 .charging
             ].contains(UIDevice.current.batteryState)
             manager.desiredAccuracy = (
-                externalPower
-                ? kCLLocationAccuracyBestForNavigation
-                : kCLLocationAccuracyBest
+                (call.getBool("enableHighAccuracy", false))
+                ? (externalPower
+                    ? kCLLocationAccuracyBestForNavigation
+                    : kCLLocationAccuracyBest)
+                : kCLLocationAccuracyThreeKilometers
             )
             manager.distanceFilter = call.getDouble(
                 "distanceFilter"

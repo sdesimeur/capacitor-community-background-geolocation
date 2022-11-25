@@ -144,7 +144,7 @@ public class BackgroundGeolocation extends Plugin {
                 call.getFloat("distanceFilter", 0f),
                 call.getFloat("timeout", 1000),
                 call.getFloat("maximumAge", 1000),
-                call.getBool("enableHighAccuracy", true),
+                call.getBool("enableHighAccuracy", false),
         );
     }
 
