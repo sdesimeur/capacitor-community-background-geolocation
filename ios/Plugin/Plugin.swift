@@ -89,13 +89,31 @@ public class BackgroundGeolocation : CAPPlugin, CLLocationManagerDelegate {
                 .full,
                 .charging
             ].contains(UIDevice.current.batteryState)
-            manager.desiredAccuracy = (
-                (call.getBool("enableHighAccuracy", false))
-                ? (externalPower
-                    ? kCLLocationAccuracyBestForNavigation
-                    : kCLLocationAccuracyBest)
-                : kCLLocationAccuracyThreeKilometers
+            manager.allowDeferredLocationUpdates(
+                untilTraveled: (CLLocationDistance)(call.getDouble(
+                    "distanceFilter"
+                ) ?? CLLocationDistanceMax),
+                timeout: (TimeInterval)((call.getDouble(
+                    "maximumAge"
+                ) ?? 1000) / 1000)
             )
+            if #available(iOS 14.0, *) {
+                manager.desiredAccuracy = (
+                    (call.getBool("enableHighAccuracy", false))
+                    ? (externalPower
+                       ? kCLLocationAccuracyBestForNavigation
+                       : kCLLocationAccuracyBest)
+                    : kCLLocationAccuracyReduced
+                )
+            } else {
+                manager.desiredAccuracy = (
+                    (call.getBool("enableHighAccuracy", false))
+                    ? (externalPower
+                       ? kCLLocationAccuracyBestForNavigation
+                       : kCLLocationAccuracyBest)
+                    : kCLLocationAccuracyThreeKilometers
+                )
+            }
             manager.distanceFilter = call.getDouble(
                 "distanceFilter"
             ) ?? kCLDistanceFilterNone;
