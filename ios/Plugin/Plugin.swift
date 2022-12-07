@@ -78,7 +78,8 @@ public class BackgroundGeolocation : CAPPlugin, CLLocationManagerDelegate {
 
         // CLLocationManager requires main thread
         DispatchQueue.main.async {
-            let background = call.getString("backgroundMessage") != nil
+            //let background = call.getString("backgroundMessage") != nil
+            let background = false
             let watcher = Watcher(
                 call.callbackId,
                 stale: call.getBool("stale") ?? false
@@ -89,14 +90,14 @@ public class BackgroundGeolocation : CAPPlugin, CLLocationManagerDelegate {
                 .full,
                 .charging
             ].contains(UIDevice.current.batteryState)
-            manager.allowDeferredLocationUpdates(
+            /*manager.allowDeferredLocationUpdates(
                 untilTraveled: (CLLocationDistance)(call.getDouble(
                     "distanceFilter"
                 ) ?? CLLocationDistanceMax),
                 timeout: (TimeInterval)((call.getDouble(
                     "maximumAge"
                 ) ?? 1000) / 1000)
-            )
+            )*/
             if #available(iOS 14.0, *) {
                 manager.desiredAccuracy = (
                     (call.getBool("enableHighAccuracy", false))
