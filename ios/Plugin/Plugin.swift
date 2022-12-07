@@ -78,8 +78,8 @@ public class BackgroundGeolocation : CAPPlugin, CLLocationManagerDelegate {
 
         // CLLocationManager requires main thread
         DispatchQueue.main.async {
-            //let background = call.getString("backgroundMessage") != nil
-            let background = false
+            let background = call.getString("backgroundMessage") != nil
+            //let background = false
             let watcher = Watcher(
                 call.callbackId,
                 stale: call.getBool("stale") ?? false
