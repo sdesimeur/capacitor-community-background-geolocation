@@ -93,7 +93,8 @@ public class BackgroundGeolocationService extends Service {
             );
             //LocationRequest locationRequest = new LocationRequest();
             LocationRequest.Builder locationRequest = new LocationRequest.Builder(timeout);
-            locationRequest.setMaxUpdateDelayMillis(maximumAge + 1000);
+            locationRequest.setMaxUpdateDelayMillis(maximumAge);
+            locationRequest.setIntervalMillis(timeout);
 	        //locationRequest.setMaxWaitTime(timeout);
 	        //locationRequest.setInterval(maximumAge);
 	    if (enableHighAccuracy) {
