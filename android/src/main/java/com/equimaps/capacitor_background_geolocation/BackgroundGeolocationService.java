@@ -1,5 +1,6 @@
 package com.equimaps.capacitor_background_geolocation;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.LocationManager;
 import android.app.Notification;
@@ -17,6 +18,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 
 import java.util.HashSet;
 
@@ -61,7 +63,7 @@ public class BackgroundGeolocationService extends Service {
     private class Watcher {
         public String id;
         public FusedLocationProviderClient client;
-        public LocationRequest locationRequest;
+        public LocationRequest.Builder locationRequest;
         public LocationCallback locationCallback;
         public Notification backgroundNotification;
     }
@@ -89,13 +91,13 @@ public class BackgroundGeolocationService extends Service {
             FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(
                     BackgroundGeolocationService.this
             );
-            LocationRequest locationRequest = new LocationRequest();
-	    //locationRequest.setMaxWaitTime(timeout);
-	    //locationRequest.setMaxWaitTime(timeout);
-            locationRequest.setDurationMillis(timeout);
-            locationRequest.setIntervalMillis(maximumAge);
+            //LocationRequest locationRequest = new LocationRequest();
+            LocationRequest.Builder locationRequest = new LocationRequest.Builder(timeout);
+            locationRequest.setMaxUpdateDelayMillis(maximumAge + 1000);
+	        //locationRequest.setMaxWaitTime(timeout);
+	        //locationRequest.setInterval(maximumAge);
 	    if (enableHighAccuracy) {
-            	locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            	locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
 	    } else {
 		LocationManager lm = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
 		boolean networkEnabled = false;
@@ -103,10 +105,10 @@ public class BackgroundGeolocationService extends Service {
                     networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
                 } catch (Exception ex) {}
 
-            	locationRequest.setPriority(networkEnabled ? LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY : LocationRequest.PRIORITY_LOW_POWER);
+            	locationRequest.setPriority(networkEnabled ? Priority.PRIORITY_BALANCED_POWER_ACCURACY : Priority.PRIORITY_LOW_POWER);
 	    }
 	    //locationRequest.setSmallestDisplacement(distanceFilter);
-            locationRequest.setMinUpdateDistanceMeters(distanceFilter);
+        locationRequest.setMinUpdateDistanceMeters(distanceFilter);
 
             LocationCallback callback = new LocationCallback(){
                 @Override
@@ -140,7 +142,7 @@ public class BackgroundGeolocationService extends Service {
             // we simply ignore the exception.
             try {
                 watcher.client.requestLocationUpdates(
-                        watcher.locationRequest,
+                        watcher.locationRequest.build(),
                         watcher.locationCallback,
                         null
                 );
@@ -160,13 +162,14 @@ public class BackgroundGeolocationService extends Service {
             }
         }
 
+        @SuppressLint("MissingPermission")
         void onPermissionsGranted() {
             // If permissions were granted while the app was in the background, for example in
             // the Settings app, the watchers need restarting.
             for (Watcher watcher : watchers) {
                 watcher.client.removeLocationUpdates(watcher.locationCallback);
                 watcher.client.requestLocationUpdates(
-                        watcher.locationRequest,
+                        watcher.locationRequest.build(),
                         watcher.locationCallback,
                         null
                 );
