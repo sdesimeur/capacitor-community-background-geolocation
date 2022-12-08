@@ -90,8 +90,10 @@ public class BackgroundGeolocationService extends Service {
                     BackgroundGeolocationService.this
             );
             LocationRequest locationRequest = new LocationRequest();
-            locationRequest.setMaxWaitTime(timeout);
-            locationRequest.setInterval(maximumAge);
+	    //locationRequest.setMaxWaitTime(timeout);
+	    //locationRequest.setMaxWaitTime(timeout);
+            locationRequest.setDurationMillis(timeout);
+            locationRequest.setIntervalMillis(maximumAge);
 	    if (enableHighAccuracy) {
             	locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 	    } else {
@@ -103,7 +105,8 @@ public class BackgroundGeolocationService extends Service {
 
             	locationRequest.setPriority(networkEnabled ? LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY : LocationRequest.PRIORITY_LOW_POWER);
 	    }
-            locationRequest.setSmallestDisplacement(distanceFilter);
+	    //locationRequest.setSmallestDisplacement(distanceFilter);
+            locationRequest.setMinUpdateDistanceMeters(distanceFilter);
 
             LocationCallback callback = new LocationCallback(){
                 @Override
