@@ -88,28 +88,29 @@ public class BackgroundGeolocationService extends Service {
 		long maximumAge,
 		boolean enableHighAccuracy
         ) {
+            int priority = Priority.PRIORITY_HIGH_ACCURACY;
+            if (enableHighAccuracy) {
+                priority = Priority.PRIORITY_HIGH_ACCURACY;
+            } else {
+                LocationManager lm = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
+                boolean networkEnabled = false;
+                try {
+                    networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                } catch (Exception ex) {}
+
+                priority = networkEnabled ? Priority.PRIORITY_BALANCED_POWER_ACCURACY : Priority.PRIORITY_LOW_POWER;
+            }
+
+
             FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(
                     BackgroundGeolocationService.this
             );
             //LocationRequest locationRequest = new LocationRequest();
-            LocationRequest.Builder locationRequest = new LocationRequest.Builder(timeout);
-            locationRequest.setMaxUpdateDelayMillis(maximumAge);
-            locationRequest.setIntervalMillis(timeout);
-	        //locationRequest.setMaxWaitTime(timeout);
-	        //locationRequest.setInterval(maximumAge);
-	    if (enableHighAccuracy) {
-            	locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
-	    } else {
-		LocationManager lm = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
-		boolean networkEnabled = false;
-		try {
-                    networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-                } catch (Exception ex) {}
-
-            	locationRequest.setPriority(networkEnabled ? Priority.PRIORITY_BALANCED_POWER_ACCURACY : Priority.PRIORITY_LOW_POWER);
-	    }
-	    //locationRequest.setSmallestDisplacement(distanceFilter);
-        locationRequest.setMinUpdateDistanceMeters(distanceFilter);
+            LocationRequest.Builder locationRequest = (new LocationRequest.Builder(priority, timeout))
+                .setMaxUpdateDelayMillis(maximumAge)
+                .setIntervalMillis(timeout)
+                .setMinUpdateDistanceMeters(distanceFilter)
+                    .setMinUpdateIntervalMillis(timeout);
 
             LocationCallback callback = new LocationCallback(){
                 @Override
