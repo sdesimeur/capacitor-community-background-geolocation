@@ -102,7 +102,8 @@ public class BackgroundGeolocation : CAPPlugin, CLLocationManagerDelegate {
                 manager.desiredAccuracy = (
                     (call.getBool("enableHighAccuracy", false))
                     ? (externalPower
-                       ? kCLLocationAccuracyBestForNavigation
+                       ? kCLLocationAccuracyBest
+                       //? kCLLocationAccuracyBestForNavigation
                        : kCLLocationAccuracyBest)
                     : kCLLocationAccuracyReduced
                 )
@@ -119,7 +120,7 @@ public class BackgroundGeolocation : CAPPlugin, CLLocationManagerDelegate {
                 "distanceFilter"
             ) ?? kCLDistanceFilterNone;
             manager.allowsBackgroundLocationUpdates = background
-            manager.showsBackgroundLocationIndicator = background
+            manager.showsBackgroundLocationIndicator = false
             manager.pausesLocationUpdatesAutomatically = false
             self.watchers.append(watcher)
             if call.getBool("requestPermissions") != false {
