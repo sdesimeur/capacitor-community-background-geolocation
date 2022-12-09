@@ -99,6 +99,7 @@ public class BackgroundGeolocationService extends Service {
                 } catch (Exception ex) {}
 
                 priority = networkEnabled ? Priority.PRIORITY_BALANCED_POWER_ACCURACY : Priority.PRIORITY_LOW_POWER;
+                priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY;
             }
 
 
@@ -107,10 +108,10 @@ public class BackgroundGeolocationService extends Service {
             );
             //LocationRequest locationRequest = new LocationRequest();
             LocationRequest.Builder locationRequest = (new LocationRequest.Builder(priority, timeout))
-                .setMaxUpdateDelayMillis(maximumAge)
-                .setIntervalMillis(timeout)
+                //.setMaxUpdateDelayMillis(maximumAge)
+                //.setIntervalMillis(timeout)
                 .setMinUpdateDistanceMeters(distanceFilter)
-                    .setMinUpdateIntervalMillis(timeout);
+                    .setMinUpdateIntervalMillis(maximumAge);
 
             LocationCallback callback = new LocationCallback(){
                 @Override
